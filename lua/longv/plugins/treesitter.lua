@@ -11,9 +11,10 @@ return {
         "css", "tsx", "astro",
         "markdown", "markdown_inline",
         "kotlin", "groovy",
-        "gdscript",
+        "gdscript", "cpp",
         "lua",
         "go",
+        "python",
       },
 
       -- Install parsers synchronously (only applied to `ensure_installed`)
