@@ -43,7 +43,8 @@ return {
         "mdx_analyzer",
         "jsonls",
         "pylsp",
-        "ast_grep",
+        "clangd",
+        "dockerls",
       },
       handlers = {
         lsp_zero.default_setup,
@@ -54,11 +55,6 @@ return {
         marksman = function()
           require("lspconfig").marksman.setup {
             filetypes = { "markdown" }
-          }
-        end,
-        ast_grep = function()
-          require("lspconfig").ast_grep.setup {
-            filetypes = { "cpp" }
           }
         end,
       }
