@@ -45,6 +45,8 @@ return {
         "pylsp",
         "clangd",
         "dockerls",
+        "terraformls",
+        "yamlls",
       },
       handlers = {
         lsp_zero.default_setup,
@@ -57,6 +59,19 @@ return {
             filetypes = { "markdown" }
           }
         end,
+        pylsp = function()
+          require("lspconfig").pylsp.setup {
+            settings = {
+                pylsp = {
+                    plugins = {
+                        pycodestyle = {
+                            maxLineLength = 200,
+                        },
+                    }
+                }
+            }
+          }
+        end
       }
     })
 
