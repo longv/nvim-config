@@ -1,14 +1,21 @@
-local pipepath = vim.fn.stdpath("cache") .. "/server.pipe"
-if not vim.loop.fs_stat(pipepath) then
-  vim.fn.serverstart(pipepath)
+local uv        = vim.loop
+local pipepath  = vim.fn.stdpath("cache") .. "/server.pipe"
+
+-- Attempt to bring up an RPC server no matter what.
+-- If the pipe file exists but no one is listening, unlink it first.
+local function ensure_pipe(path)
+  -- Is a process already listening on that path?
+  local ok = pcall(vim.fn.serverstart, path)
+  if ok then
+    return
+  end
+
+  -- Couldn’t start – most likely a stale file.  Remove & retry.
+  local stat = uv.fs_stat(path)
+  if stat then
+    uv.fs_unlink(path)          -- remove stale pipe
+    pcall(vim.fn.serverstart, path)
+  end
 end
 
--- Set tab character as indentation for GDScript
-vim.api.nvim_create_autocmd("FileType", {
-    pattern = "gdscript",
-    callback = function()
-        vim.bo.tabstop = 4
-        vim.bo.shiftwidth = 4
-        vim.bo.expandtab = false
-    end,
-})
+ensure_pipe(pipepath)

@@ -2,8 +2,14 @@ return {
   "VonHeikemen/lsp-zero.nvim",
   dependencies = {
     "neovim/nvim-lspconfig",
-    "williamboman/mason.nvim",
-    "williamboman/mason-lspconfig.nvim",
+    {
+      "williamboman/mason.nvim",
+      version = "v1.11.0",
+    },
+    {
+      "williamboman/mason-lspconfig.nvim",
+      version = "v1.32.0",
+    },
     "hrsh7th/nvim-cmp",
     "hrsh7th/cmp-nvim-lsp",
     "hrsh7th/cmp-nvim-lua",
@@ -31,9 +37,9 @@ return {
     })
 
     require("mason").setup({})
-    require("mason-lspconfig").setup({
+    require("mason-lspconfig").setup {
       ensure_installed = {
-        "tsserver", 
+        "eslint", 
         "tailwindcss",
         "kotlin_language_server", 
         "gradle_ls",
@@ -54,6 +60,18 @@ return {
           local lua_opts = lsp_zero.nvim_lua_ls()
           require("lspconfig").lua_ls.setup(lua_opts)
         end,
+        eslint = function()
+          require("lspconfig").eslint.setup {
+            on_attach = function(client, bufnr)
+              client.server_capabilities.documentFormattingProvider = false
+
+              vim.api.nvim_create_autocmd("BufWritePre", {
+                buffer = bufnr,
+                command = "EslintFixAll",
+              })
+            end,
+          }
+        end,
         marksman = function()
           require("lspconfig").marksman.setup {
             filetypes = { "markdown" }
@@ -73,7 +91,7 @@ return {
           }
         end
       }
-    })
+    }
 
     require("lspconfig").gdscript.setup({})
 
